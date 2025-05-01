@@ -17,10 +17,11 @@ const Gate = ({ gate }) => {
         bgcolor: gate.color,
         color: 'white',
         p: 1,
+        userSelect: 'none',
         borderRadius: 1,
         textAlign: 'center',
         cursor: 'grab',
-        opacity: isDragging ? 0.5 : 1,
+        opacity: isDragging ? 1 : 1,
         '&:hover': { opacity: 0.8 },
       }}
     >
