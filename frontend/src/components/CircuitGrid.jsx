@@ -2,7 +2,7 @@ import React from 'react';
 import { Box } from '@mui/material';
 import { useDroppable } from '@dnd-kit/core';
 
-const GridCell = ({ qubit, position, isOver }) => {
+const GridCell = ({ qubit, position}) => {
   const { setNodeRef } = useDroppable({
     id: `${qubit}-${position}`,
   });
@@ -13,8 +13,8 @@ const GridCell = ({ qubit, position, isOver }) => {
       sx={{
         width: '60px',
         height: '100%',
-        border: isOver ? '2px dashed #1976d2' : '1px solid #eee',
-        bgcolor: isOver ? '#e3f2fd' : 'transparent',
+        border: '2px dashed #1976d2',
+        bgcolor: '#e3f2fd',
         position: 'relative',
       }}
     />
