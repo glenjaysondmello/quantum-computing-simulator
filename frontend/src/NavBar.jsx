@@ -23,7 +23,7 @@ export default function Navbar({ darkMode, toggleDarkMode }) {
   // Navigation items with their respective routes
   const navItems = [
     { text: "Home", path: "/" },
-    { text: "Simulator", path: "/" },
+    { text: "Simulator", path: "/composer" },
     { text: "Learn", path: "/learn" },
     { text: "About", path: "/about" },
     { text: "Contact", path: "/contact" }

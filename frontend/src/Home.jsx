@@ -57,7 +57,7 @@ export default function Home() {
 
           <button
             className="flex items-center px-4 sm:px-5 md:px-6 py-2 sm:py-2.5 md:py-3 text-base sm:text-lg font-medium text-gray-800 bg-white rounded-full hover:bg-gray-100 transition-colors shadow-lg"
-            onClick={() => navigate('/')}
+            onClick={() => navigate('/composer')}
           >
             <svg
               className="w-5 h-5 sm:w-6 sm:h-6 mr-2"
