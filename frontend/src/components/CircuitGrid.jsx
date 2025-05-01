@@ -53,7 +53,6 @@ const CircuitGrid = ({ qubits, circuit }) => {
           </Box>
 
           <Box sx={{ flex: 1, height: '100%', position: 'relative' }}>
-            {/* Horizontal line */}
             <Box
               sx={{
                 width: '100%',
@@ -65,7 +64,6 @@ const CircuitGrid = ({ qubits, circuit }) => {
               }}
             />
 
-            {/* Droppable cells */}
             <Box sx={{ display: 'flex', height: '100%' }}>
               {Array.from({ length: positions }).map((_, pos) => (
                 <GridCell key={pos} qubit={qubit} position={pos} />

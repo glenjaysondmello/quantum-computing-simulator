@@ -69,7 +69,6 @@ const QuantumComposer = () => {
           </Box>
         </Box>
 
-        {/* Grid layout */}
         <Grid container spacing={2}>
           <Grid item xs={12} md={3}>
             <Paper sx={{ ...paperStyle, height: '90vh' }}>

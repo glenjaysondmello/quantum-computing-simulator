@@ -8,17 +8,14 @@ const BlochSphere = () => {
       <ambientLight intensity={0.5} />
       <pointLight position={[10, 10, 10]} />
       
-      {/* Bloch Sphere */}
       <Sphere args={[1, 32, 32]} position={[0, 0, 0]}>
         <meshPhongMaterial wireframe color="white" opacity={0.3} transparent />
       </Sphere>
 
-      {/* Axes */}
       <Line points={[[-1.5, 0, 0], [1.5, 0, 0]]} color="red" /> {/* X-axis */}
       <Line points={[[0, -1.5, 0], [0, 1.5, 0]]} color="green" /> {/* Y-axis */}
       <Line points={[[0, 0, -1.5], [0, 0, 1.5]]} color="blue" /> {/* Z-axis */}
 
-      {/* State vector */}
       <Line points={[[0, 0, 0], [0, 0, 1]]} color="purple" />
       
       <OrbitControls />
