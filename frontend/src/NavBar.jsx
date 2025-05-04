@@ -1,5 +1,11 @@
-import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from "react-redux";
+import { auth } from "./firebase/firebaseConfig";
+import { signOut } from "firebase/auth";
+import { clearAuthUser, setAuthUser } from "./features/authSlice";
+import Avatar from '@mui/material/Avatar';
+import toast from "react-hot-toast";
 
 function NavItem({ text, path, active = false }) {
   return (
@@ -14,7 +20,38 @@ function NavItem({ text, path, active = false }) {
 
 export default function Navbar({ darkMode, toggleDarkMode }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { user } = useSelector((store) => store.auth);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const location = useLocation();
+
+  const logOut = () => {
+    signOut(auth).then(() => {
+      dispatch(clearAuthUser());
+      toast.success("Logged Out Successfully");
+      navigate("/");
+    }).catch((error) => {
+      toast.error(error.message);
+    })
+  }
+
+  useEffect(() => {
+    const unSubscribe = auth.onAuthStateChanged((user) => {
+      if(user) {
+        dispatch(
+          setAuthUser({
+            uid: user.uid,
+            email: user.email,
+            displayName: user.displayName,
+            photoURL: user.photoURL,
+          })
+        )
+      } else {
+        dispatch(setAuthUser(null));
+      }
+    })
+    return () => unSubscribe();
+  }, [dispatch]);
   
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
@@ -55,17 +92,60 @@ export default function Navbar({ darkMode, toggleDarkMode }) {
           ))}
           
           <div className="flex items-center ml-4 lg:ml-8 space-x-2 lg:space-x-4">
-            <span className={`text-xs lg:text-sm ${darkMode ? 'text-white' : 'text-gray-800'}`}>Dark Mode</span>
-            <button 
-              onClick={toggleDarkMode} 
-              className={`relative inline-flex h-5 lg:h-6 w-10 lg:w-12 items-center rounded-full transition-colors duration-200 ease-in-out ${darkMode ? 'bg-cyan-600' : 'bg-gray-300'}`}
-            >
-              <span className={`inline-block h-4 lg:h-5 w-4 lg:w-5 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out ${darkMode ? 'translate-x-5 lg:translate-x-6' : 'translate-x-1'}`} />
-            </button>
-            
-            <Link to="/login" className="px-3 lg:px-4 py-1.5 lg:py-2 text-sm lg:text-base text-white bg-cyan-500 rounded-full font-medium hover:bg-cyan-600 transition-colors">
+
+          {user ? (
+            <>
+              <div className="flex items-center gap-10 animate-slideFromRight">
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-full overflow-hidden animate-pulse">
+                    {user.photoURL ? (
+                      <img
+                        src={user.photoURL}
+                        alt={user.displayName || "User Avatar"}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.target.src =
+                            "https://tse3.mm.bing.net/th?id=OIP.btgP01toqugcXjPwAF-k2AHaHa&pid=Api&P=0&h=180";
+                        }}
+                      />
+                    ) : (
+                      <Avatar
+                        src="https://tse3.mm.bing.net/th?id=OIP.btgP01toqugcXjPwAF-k2AHaHa&pid=Api&P=0&h=180"
+                        size="40"
+                        round={true}
+                        className="w-full h-full object-cover"
+                      />
+                    )}
+                  </div>
+                  <h3 className="text-gray-300 font-medium">
+                    {user.displayName}
+                  </h3>
+                </div>
+                <button
+                  onClick={logOut}
+                  className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md transition-all duration-300 hover:shadow-[0_0_15px_rgba(239,68,68,0.5)] animate-pulse"
+                >
+                  Logout
+                </button>
+              </div>
+            </>
+          ) : (
+            <div className="flex items-center gap-4 animate-slideFromRight">
+              <Link to="/login" className="px-3 lg:px-4 py-1.5 lg:py-2 text-sm lg:text-base text-white bg-cyan-500 rounded-full font-medium hover:bg-cyan-600 transition-colors">
               Login / Sign Up
             </Link>
+            </div>
+          )}
+
+
+
+
+
+
+
+
+
+            
           </div>
         </div>
       </nav>
