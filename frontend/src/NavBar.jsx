@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { auth } from "./firebase/firebaseConfig";
 import { signOut } from "firebase/auth";
 import { clearAuthUser, setAuthUser } from "./features/authSlice";
-import Avatar from '@mui/material/Avatar';
+import Avatar from "@mui/material/Avatar";
 import toast from "react-hot-toast";
 
 function NavItem({ text, path, active = false }) {
   return (
-    <Link 
+    <Link
       to={path}
-      className={`text-base ${active ? 'text-white font-medium' : 'text-gray-300 hover:text-white'} transition-colors`}
+      className={`text-base ${
+        active ? "text-white font-medium" : "text-gray-300 hover:text-white"
+      } transition-colors`}
     >
       {text}
     </Link>
@@ -26,18 +28,20 @@ export default function Navbar({ darkMode, toggleDarkMode }) {
   const location = useLocation();
 
   const logOut = () => {
-    signOut(auth).then(() => {
-      dispatch(clearAuthUser());
-      toast.success("Logged Out Successfully");
-      navigate("/");
-    }).catch((error) => {
-      toast.error(error.message);
-    })
-  }
+    signOut(auth)
+      .then(() => {
+        dispatch(clearAuthUser());
+        toast.success("Logged Out Successfully");
+        navigate("/");
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
+  };
 
   useEffect(() => {
     const unSubscribe = auth.onAuthStateChanged((user) => {
-      if(user) {
+      if (user) {
         dispatch(
           setAuthUser({
             uid: user.uid,
@@ -45,135 +49,157 @@ export default function Navbar({ darkMode, toggleDarkMode }) {
             displayName: user.displayName,
             photoURL: user.photoURL,
           })
-        )
+        );
       } else {
         dispatch(setAuthUser(null));
       }
-    })
+    });
     return () => unSubscribe();
   }, [dispatch]);
-  
+
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
   };
-  
+
   // Navigation items with their respective routes
   const navItems = [
     { text: "Home", path: "/" },
     { text: "Simulator", path: "/composer" },
     { text: "Learn", path: "/learn" },
     { text: "About", path: "/about" },
-    { text: "Contact", path: "/contact" }
+    { text: "Contact", path: "/contact" },
   ];
-  
+
   return (
     <>
       <nav className="relative z-20 flex items-center justify-between px-4 sm:px-6 lg:px-8 py-4 md:py-6">
-        <Link to="/" className="text-2xl sm:text-3xl font-bold text-cyan-400">QSIM</Link>
-        
-        <button 
+        <Link to="/" className="text-2xl sm:text-3xl font-bold text-cyan-400">
+          QSIM
+        </Link>
+
+        <button
           className="md:hidden text-white focus:outline-none"
           onClick={toggleMobileMenu}
         >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={mobileMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d={
+                mobileMenuOpen
+                  ? "M6 18L18 6M6 6l12 12"
+                  : "M4 6h16M4 12h16M4 18h16"
+              }
+            />
           </svg>
         </button>
-        
+
         <div className="hidden md:flex items-center space-x-4 lg:space-x-8">
           {navItems.map((item) => (
-            <NavItem 
+            <NavItem
               key={item.path}
-              text={item.text} 
+              text={item.text}
               path={item.path}
-              active={location.pathname === item.path || 
-                (location.pathname === "" && item.path === "/")}
+              active={
+                location.pathname === item.path ||
+                (location.pathname === "" && item.path === "/")
+              }
             />
           ))}
-          
+
           <div className="flex items-center ml-4 lg:ml-8 space-x-2 lg:space-x-4">
-
-          {user ? (
-            <>
-              <div className="flex items-center gap-10 animate-slideFromRight">
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full overflow-hidden animate-pulse">
-                    {user.photoURL ? (
-                      <img
-                        src={user.photoURL}
-                        alt={user.displayName || "User Avatar"}
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          e.target.src =
-                            "https://tse3.mm.bing.net/th?id=OIP.btgP01toqugcXjPwAF-k2AHaHa&pid=Api&P=0&h=180";
-                        }}
-                      />
-                    ) : (
-                      <Avatar
-                        src="https://tse3.mm.bing.net/th?id=OIP.btgP01toqugcXjPwAF-k2AHaHa&pid=Api&P=0&h=180"
-                        size="40"
-                        round={true}
-                        className="w-full h-full object-cover"
-                      />
-                    )}
+            {user ? (
+              <>
+                <div className="flex items-center gap-10 animate-slideFromRight">
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-full overflow-hidden animate-pulse">
+                      {user.photoURL ? (
+                        <img
+                          src={user.photoURL}
+                          alt={user.displayName || "User Avatar"}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            e.target.src =
+                              "https://tse3.mm.bing.net/th?id=OIP.btgP01toqugcXjPwAF-k2AHaHa&pid=Api&P=0&h=180";
+                          }}
+                        />
+                      ) : (
+                        <Avatar
+                          src="https://tse3.mm.bing.net/th?id=OIP.btgP01toqugcXjPwAF-k2AHaHa&pid=Api&P=0&h=180"
+                          size="40"
+                          round={true}
+                          className="w-full h-full object-cover"
+                        />
+                      )}
+                    </div>
+                    <h3 className="text-gray-300 font-medium">
+                      {user.displayName}
+                    </h3>
                   </div>
-                  <h3 className="text-gray-300 font-medium">
-                    {user.displayName}
-                  </h3>
+                  <button
+                    onClick={logOut}
+                    className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md transition-all duration-300 hover:shadow-[0_0_15px_rgba(239,68,68,0.5)] animate-pulse"
+                  >
+                    Logout
+                  </button>
                 </div>
-                <button
-                  onClick={logOut}
-                  className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md transition-all duration-300 hover:shadow-[0_0_15px_rgba(239,68,68,0.5)] animate-pulse"
+              </>
+            ) : (
+              <div className="flex items-center gap-4 animate-slideFromRight">
+                <Link
+                  to="/login"
+                  className="px-3 lg:px-4 py-1.5 lg:py-2 text-sm lg:text-base text-white bg-cyan-500 rounded-full font-medium hover:bg-cyan-600 transition-colors"
                 >
-                  Logout
-                </button>
+                  Login / Sign Up
+                </Link>
               </div>
-            </>
-          ) : (
-            <div className="flex items-center gap-4 animate-slideFromRight">
-              <Link to="/login" className="px-3 lg:px-4 py-1.5 lg:py-2 text-sm lg:text-base text-white bg-cyan-500 rounded-full font-medium hover:bg-cyan-600 transition-colors">
-              Login / Sign Up
-            </Link>
-            </div>
-          )}
-
-
-
-
-
-
-
-
-
-            
+            )}
           </div>
         </div>
       </nav>
-      
+
       {mobileMenuOpen && (
         <div className="fixed inset-0 z-10 bg-gray-900 bg-opacity-90 md:hidden">
           <div className="flex flex-col items-center justify-center h-full space-y-8 text-xl">
             {navItems.map((item) => (
-              <NavItem 
+              <NavItem
                 key={item.path}
-                text={item.text} 
+                text={item.text}
                 path={item.path}
-                active={location.pathname === item.path || 
-                  (location.pathname === "" && item.path === "/")}
+                active={
+                  location.pathname === item.path ||
+                  (location.pathname === "" && item.path === "/")
+                }
               />
             ))}
-            
+
             <div className="flex items-center space-x-4 pt-6">
               <span className="text-white">Dark Mode</span>
-              <button 
-                onClick={toggleDarkMode} 
-                className={`relative inline-flex h-6 w-12 items-center rounded-full transition-colors duration-200 ease-in-out ${darkMode ? 'bg-cyan-600' : 'bg-gray-300'}`}
+              <button
+                onClick={toggleDarkMode}
+                className={`relative inline-flex h-6 w-12 items-center rounded-full transition-colors duration-200 ease-in-out ${
+                  darkMode ? "bg-cyan-600" : "bg-gray-300"
+                }`}
               >
-                <span className={`inline-block h-5 w-5 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out ${darkMode ? 'translate-x-6' : 'translate-x-1'}`} />
+                <span
+                  className={`inline-block h-5 w-5 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out ${
+                    darkMode ? "translate-x-6" : "translate-x-1"
+                  }`}
+                />
               </button>
             </div>
-            
-            <Link to="/login" className="px-6 py-2 text-white bg-cyan-500 rounded-full font-medium hover:bg-cyan-600 transition-colors">
+
+            <Link
+              to="/login"
+              className="px-6 py-2 text-white bg-cyan-500 rounded-full font-medium hover:bg-cyan-600 transition-colors"
+            >
               Login / Sign Up
             </Link>
           </div>

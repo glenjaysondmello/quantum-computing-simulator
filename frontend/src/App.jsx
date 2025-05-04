@@ -1,7 +1,7 @@
 import React from "react";
 import { ThemeProvider, createTheme } from "@mui/material";
 import { BrowserRouter, Routes, Route } from "react-router";
-import { useSelector } from "react-redux";
+// import { useSelector } from "react-redux";
 import { Toaster } from "react-hot-toast";
 import Home from "./Home";
 import QuantumComposer from "./components/QuantumComposer";
@@ -12,18 +12,20 @@ import PrivateRoute from "./privateRoute/PrivateRoute";
 const theme = createTheme();
 
 function App() {
-  const { token } = useSelector((store) => store.auth);
+  // const { token } = useSelector((store) => store.auth);
   return (
     <>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
-          {!token && (
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          {/* {!token && (
             <>
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
             </>
-          )}
+          )} */}
           <Route
             path="/composer"
             element={

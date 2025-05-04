@@ -53,7 +53,8 @@ const GatePanel = () => {
       <Typography
         variant="h6"
         gutterBottom
-        sx={{ color: theme.palette.mode === 'dark' ? '#67e8f9' : '#0f172a', fontWeight: 'bold' }}
+        sx = {{color:'#67e8f9', fontWeight: 'bold'}}
+        // sx={{ color: theme.palette.mode === 'dark' ? '#67e8f9' : '#0f172a', fontWeight: 'bold'}}
       >
         Quantum Gates
       </Typography>
