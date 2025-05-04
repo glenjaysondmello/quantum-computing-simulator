@@ -12,12 +12,14 @@ const GridCell = ({ qubit, position }) => {
       ref={setNodeRef}
       sx={{
         width: '60px',
-        height: '100%',
-        border: '1px dashed rgba(255, 255, 255, 0.2)',
-        bgcolor: 'rgba(255, 255, 255, 0.05)',
-        transition: '0.2s',
+        height: '60px',
+        borderRight: '1px dashed rgba(255, 255, 255, 0.1)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        transition: 'background-color 0.2s',
         '&:hover': {
-          bgcolor: 'rgba(255, 255, 255, 0.1)',
+          bgcolor: 'rgba(255, 255, 255, 0.07)',
         },
       }}
     />
@@ -25,54 +27,61 @@ const GridCell = ({ qubit, position }) => {
 };
 
 const CircuitGrid = ({ qubits, circuit }) => {
-  const positions = 10;
+  const positions = 12; // Wider circuit layout
 
   return (
-    <Box sx={{ width: '100%', px: 1 }}>
+    <Box sx={{ width: '100%', overflowX: 'auto', pb: 2 }}>
       {Array.from({ length: qubits }).map((_, qubit) => (
         <Box
           key={qubit}
           sx={{
-            height: '60px',
-            borderBottom: '1px solid #444',
             display: 'flex',
             alignItems: 'center',
-            color: '#ffffff',
+            borderBottom: '1px solid #334155',
+            height: '60px',
+            position: 'relative',
           }}
         >
+          {/* Qubit Label */}
           <Box
             sx={{
               width: '60px',
-              borderRight: '1px solid #444',
-              fontWeight: 'bold',
-              textAlign: 'center',
+              height: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
               color: '#67e8f9',
+              fontWeight: 'bold',
+              borderRight: '1px solid #334155',
+              bgcolor: 'rgba(255, 255, 255, 0.02)',
             }}
           >
             q[{qubit}]
           </Box>
 
-          <Box sx={{ flex: 1, height: '100%', position: 'relative' }}>
+          {/* Circuit Cells */}
+          <Box sx={{ flex: 1, display: 'flex', position: 'relative' }}>
+            {/* Rail Line */}
             <Box
               sx={{
-                width: '100%',
-                height: '2px',
-                bgcolor: '#888',
                 position: 'absolute',
                 top: '50%',
-                zIndex: 1,
+                left: 0,
+                right: 0,
+                height: '2px',
+                bgcolor: '#475569',
+                zIndex: 0,
               }}
             />
 
-            <Box sx={{ display: 'flex', height: '100%' }}>
-              {Array.from({ length: positions }).map((_, pos) => (
-                <GridCell key={pos} qubit={qubit} position={pos} />
-              ))}
-            </Box>
+            {/* Droppable Cells */}
+            {Array.from({ length: positions }).map((_, position) => (
+              <GridCell key={position} qubit={qubit} position={position} />
+            ))}
 
-            {/* Render dropped gates */}
+            {/* Gates */}
             {circuit
-              .filter((gate) => gate.qubit === qubit)
+              .filter((g) => g.qubit === qubit)
               .map((gate) => (
                 <Box
                   key={`${gate.qubit}-${gate.position}`}
@@ -81,16 +90,18 @@ const CircuitGrid = ({ qubits, circuit }) => {
                     left: `${gate.position * 60 + 10}px`,
                     top: '50%',
                     transform: 'translateY(-50%)',
+                    width: '40px',
+                    height: '32px',
                     bgcolor: gate.gate.color,
                     color: '#fff',
-                    px: 1.5,
-                    py: 0.5,
-                    borderRadius: '6px',
+                    borderRadius: '8px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontWeight: 600,
+                    fontSize: '14px',
+                    boxShadow: 4,
                     zIndex: 2,
-                    boxShadow: 3,
-                    fontWeight: 'bold',
-                    textAlign: 'center',
-                    width: '40px',
                   }}
                 >
                   {gate.gate.label}

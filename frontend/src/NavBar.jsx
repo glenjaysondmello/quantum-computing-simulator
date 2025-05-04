@@ -31,11 +31,9 @@ export default function Navbar({ darkMode, toggleDarkMode }) {
   
   return (
     <>
-      {/* Navigation */}
       <nav className="relative z-20 flex items-center justify-between px-4 sm:px-6 lg:px-8 py-4 md:py-6">
         <Link to="/" className="text-2xl sm:text-3xl font-bold text-cyan-400">QSIM</Link>
         
-        {/* Mobile menu button */}
         <button 
           className="md:hidden text-white focus:outline-none"
           onClick={toggleMobileMenu}
@@ -45,7 +43,6 @@ export default function Navbar({ darkMode, toggleDarkMode }) {
           </svg>
         </button>
         
-        {/* Desktop Navigation */}
         <div className="hidden md:flex items-center space-x-4 lg:space-x-8">
           {navItems.map((item) => (
             <NavItem 
@@ -73,7 +70,6 @@ export default function Navbar({ darkMode, toggleDarkMode }) {
         </div>
       </nav>
       
-      {/* Mobile menu */}
       {mobileMenuOpen && (
         <div className="fixed inset-0 z-10 bg-gray-900 bg-opacity-90 md:hidden">
           <div className="flex flex-col items-center justify-center h-full space-y-8 text-xl">
