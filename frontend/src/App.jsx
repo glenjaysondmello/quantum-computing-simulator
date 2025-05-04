@@ -8,10 +8,12 @@ import QuantumComposer from "./components/QuantumComposer";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import PrivateRoute from "./privateRoute/PrivateRoute";
+import useFirebaseAuthListener from "./hooks/useFirebaseAuthListener";
 
 const theme = createTheme();
 
 function App() {
+  useFirebaseAuthListener();
   // const { token } = useSelector((store) => store.auth);
   return (
     <>
