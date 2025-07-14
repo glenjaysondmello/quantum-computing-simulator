@@ -1,17 +1,61 @@
-import React, { useState } from "react";
-import { Box, Typography, Switch } from "@mui/material";
+import React, { useState, useEffect, useCallback } from "react";
+import { Box, Typography, IconButton } from "@mui/material";
 import { DndContext, closestCenter } from "@dnd-kit/core";
 import GatePanel from "./GatePanel";
 import CircuitGrid from "./CircuitGrid";
 import VisualizationPanel from "./VisualizationPanel";
-import Brightness4Icon from "@mui/icons-material/Brightness4";
-import Brightness7Icon from "@mui/icons-material/Brightness7";
+import CodePanel from "./CodePanel";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import NavBar from '../NavBar';
+
+const WS_URL = 'ws://localhost:3000';
 
 const QuantumComposer = () => {
   const [qubits] = useState(4);
   const [circuit, setCircuit] = useState([]);
   const [darkMode, setDarkMode] = useState(true);
+  const [isVisualizationOpen, setIsVisualizationOpen] = useState(true);
+  const [ws, setWs] = useState(null);
+  const [simulationResults, setSimulationResults] = useState({
+    probabilities: [],
+    stateVector: []
+  });
+  const [selectedLanguage, setSelectedLanguage] = useState('qiskit');
+
+  useEffect(() => {
+    const websocket = new WebSocket(WS_URL);
+    
+    websocket.onopen = () => {
+      console.log('Connected to server');
+      setWs(websocket);
+    };
+
+    websocket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      if (data.type === 'simulation_result') {
+        setSimulationResults(data.data);
+      }
+    };
+
+    websocket.onerror = (error) => {
+      console.error('WebSocket error:', error);
+    };
+
+    return () => {
+      websocket.close();
+    };
+  }, []);
+
+  const updateSimulation = useCallback(() => {
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      ws.send(JSON.stringify({
+        type: 'circuit_update',
+        circuit,
+        selectedLanguage
+      }));
+    }
+  }, [circuit, selectedLanguage, ws]);
 
   const handleDragEnd = (event) => {
     const { active, over } = event;
@@ -27,9 +71,14 @@ const QuantumComposer = () => {
             gate: { id: gate.id, label: gate.label, color: gate.color },
           },
         ]);
+        updateSimulation();
       }
     }
   };
+
+  useEffect(() => {
+    updateSimulation();
+  }, [updateSimulation]);
 
   const toggleDarkMode = () => setDarkMode((prev) => !prev);
 
@@ -94,7 +143,7 @@ const QuantumComposer = () => {
             <GatePanel />
           </Box>
 
-          {/* Middle Circuit Grid */}
+          {/* Middle Circuit Grid and Code Panel */}
           <Box
             sx={{
               flex: "1 1 auto",
@@ -115,13 +164,58 @@ const QuantumComposer = () => {
                 border: "2px solid",
                 borderColor: darkMode ? "#334155" : "#cbd5e1",
                 borderRadius: 2,
-                p: 0, // remove padding to align tightly
+                p: 2,
                 display: "flex",
                 flexDirection: "column",
                 bgcolor: darkMode ? "#1e293b" : "#ffffff",
               }}
             >
-              <VisualizationPanel darkMode={darkMode} />
+              <CodePanel 
+                circuit={circuit} 
+                selectedLanguage={selectedLanguage}
+                onLanguageChange={setSelectedLanguage}
+              />
+            </Box>
+          </Box>
+
+          {/* Right Visualization Panel */}
+          <Box
+            sx={{
+              position: "relative",
+              width: isVisualizationOpen ? "400px" : "0px",
+              bgcolor: darkMode ? "#1e293b" : "#f1f5f9",
+              borderLeft: isVisualizationOpen ? `1px solid ${darkMode ? "#334155" : "#cbd5e1"}` : "none",
+              transition: "width 0.3s ease-in-out",
+              overflow: "hidden",
+            }}
+          >
+            <IconButton
+              onClick={() => setIsVisualizationOpen(!isVisualizationOpen)}
+              sx={{
+                position: "absolute",
+                left: "-20px",
+                top: "50%",
+                transform: "translateY(-50%)",
+                bgcolor: darkMode ? "#334155" : "#e2e8f0",
+                color: darkMode ? "#e2e8f0" : "#334155",
+                '&:hover': {
+                  bgcolor: darkMode ? "#475569" : "#cbd5e1",
+                },
+                zIndex: 1000,
+                transition: "all 0.3s ease-in-out",
+                boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
+                width: "32px",
+                height: "32px",
+              }}
+            >
+              {isVisualizationOpen ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+            </IconButton>
+            <Box sx={{ height: "100%", overflow: "auto", p: 2 }}>
+              <VisualizationPanel 
+                darkMode={darkMode} 
+                probabilities={simulationResults.probabilities}
+                stateVector={simulationResults.stateVector}
+              />
             </Box>
           </Box>
         </Box>

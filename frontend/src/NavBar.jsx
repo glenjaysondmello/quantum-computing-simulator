@@ -6,6 +6,7 @@ import { signOut } from "firebase/auth";
 import { clearAuthUser, setAuthUser } from "./features/authSlice";
 import Avatar from "@mui/material/Avatar";
 import toast from "react-hot-toast";
+import { motion } from "framer-motion";
 
 function NavItem({ text, path, active = false }) {
   return (
@@ -73,8 +74,34 @@ export default function Navbar({ darkMode, toggleDarkMode }) {
   return (
     <>
       <nav className="relative z-20 flex items-center justify-between px-4 sm:px-6 lg:px-8 py-4 md:py-6">
-        <Link to="/" className="text-2xl sm:text-3xl font-bold text-cyan-400">
-          QSIM
+        <Link to="/" className="flex items-center">
+          <motion.div
+            className="relative w-14 h-14"
+            animate={{ 
+              rotateX: [0, 360],
+              rotateY: [0, 360],
+              rotateZ: [0, 360]
+            }}
+            transition={{
+              duration: 12,
+              repeat: Infinity,
+              ease: "linear"
+            }}
+          >
+            {/* 3D Sphere */}
+            <div className="absolute inset-0 rounded-full bg-gradient-radial from-cyan-400 via-purple-500 to-blue-600 shadow-[0_0_20px_rgba(96,165,250,0.5)] transform-style-3d">
+              {/* Light reflection */}
+              <div className="absolute top-1/4 left-1/4 w-1/2 h-1/2 bg-white/20 rounded-full blur-[10px]"></div>
+              {/* Glow effect */}
+              <div className="absolute inset-0 rounded-full bg-gradient-radial from-cyan-400/20 via-purple-500/20 to-blue-600/20 animate-pulse-slow"></div>
+            </div>
+            {/* SIM text */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <span className="text-white font-bold text-xl bg-clip-text text-transparent bg-gradient-to-r from-white to-cyan-200">
+                SIM
+              </span>
+            </div>
+          </motion.div>
         </Link>
 
         <button
