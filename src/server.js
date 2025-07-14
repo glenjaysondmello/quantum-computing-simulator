@@ -9,7 +9,7 @@ const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
 // Store active connections
-const clients = new Set()
+const clients = new Set();
 
 // Quantum simulation helper functions
 const createQuantumState = (numQubits) => {
