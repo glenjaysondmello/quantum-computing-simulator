@@ -1,6 +1,6 @@
 import React from "react";
 import { ThemeProvider, createTheme } from "@mui/material";
-import { BrowserRouter, Routes, Route } from "react-router";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 // import { useSelector } from "react-redux";
 import { Toaster } from "react-hot-toast";
 import Home from "./Home";
